@@ -30,10 +30,10 @@ engine = chess.engine.SimpleEngine.popen_uci("stockfish-windows-x86-64-avx2.exe"
 
 #engine.configure({"Hash": 1024, "Threads": 7, "UCI_Elo": 1350, "UCI_LimitStrength": True, "Slow Mover": 750})
 
-engine.configure({"UCI_LimitStrength": True, "UCI_Elo": 1500, "Threads": 2, "Hash": 32})
+#engine.configure({"UCI_LimitStrength": True, "UCI_Elo": 900, "Threads": 2, "Hash": 32})
 #engine.configure({"Skill Level": 12})
 
-#engine.configure({"Skill Level": 20, "Threads": 2, "Hash": 32})
+engine.configure({"Skill Level": 4, "Threads": 2, "Hash": 32})
 
 driver = webdriver.Chrome()
 
@@ -119,20 +119,26 @@ while True:
 
     try:
         if not is_white:
-            recent_white_move = driver.find_elements(By.TAG_NAME, "vertical-move-list").pop().find_elements(By.XPATH, "./*").pop().find_elements(By.XPATH, "./*")[0].text
+            recent_white_move = driver.find_elements(By.TAG_NAME, "wc-mode-swap-move-list").pop().find_elements(By.XPATH, "./*").pop().find_elements(By.XPATH, "./*").pop().find_elements(By.XPATH, "./*").pop().find_elements(By.XPATH, "./*")[0].text
+
+            if recent_white_move.__contains__('.'):
+                raise ValueError
 
             if recent_white_move != white_move_to_play:
                 white_move_to_play = recent_white_move
                 new_move = True
         else:
-            recent_black_move = driver.find_elements(By.TAG_NAME, "vertical-move-list").pop().find_elements(By.XPATH, "./*").pop().find_elements(By.XPATH, "./*")[2].text
+            recent_black_move = driver.find_elements(By.TAG_NAME, "wc-mode-swap-move-list").pop().find_elements(By.XPATH, "./*").pop().find_elements(By.XPATH, "./*").pop().find_elements(By.XPATH, "./*").pop().find_elements(By.XPATH, "./*")[1].text
+
+            if recent_black_move.__contains__('.'):
+                raise ValueError
 
             if recent_black_move != black_move_to_play:
                 black_move_to_play = recent_black_move
                 new_move = True
 
-        #print(recent_white_move)
-        #print(recent_black_move)
+        print(recent_white_move)
+        print(recent_black_move)
     except:
         pass
     finally:
